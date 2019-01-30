@@ -19,11 +19,9 @@ The script will generate a weight directory in the name of the experiment, where
 It will also  generate a csv file with the training details. The best model should be used for testing using the evaluation_model.py
 script.
 
-For evaluating - 
-python evaluating_model.py -h will specify the input parameters required to evaluate the model.
 Example - 
-python evaluating_model.py test --skeleton_location /data/stars/user/sdas/NTU_RGB/skeleton_csv/ --data_type translation --model_name epochs_2
+python lstm_train_skeleton.py epochs name
  
-implies -> python evaluate_model.py -name_of_the_experiment -input_skeleton_location -type_of_sampling -model_name
+implies -> ./lstm_train.sh 150 smarthomes_LSTM
 
 Enjoy with LSTM!!!
