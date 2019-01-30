@@ -1,6 +1,7 @@
 import numpy as np
 import keras
 import pandas as pd
+import os
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
@@ -35,7 +36,7 @@ class DataGenerator(keras.utils.Sequence):
         'Updates indexes after each epoch'
         self.indexes = np.arange(len(self.list_IDs))
         np.random.shuffle(self.list_IDs)
-    
+
     def _name_to_int(self, name):
         integer=0
         if name=="Cook":
@@ -117,20 +118,31 @@ class DataGenerator(keras.utils.Sequence):
         y = np.empty((self.batch_size), dtype=int)
   
         # Generate data
+        f = 'Cook_p15_r03_v16_c03.mp4'
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
             
-            unpadded_file = np.load(self.path + ID + '.npz')['arr_0']
-            origin = unpadded_file[0, 3:6]
+            unpadded_file = np.load(self.path + os.path.splitext(ID)[0] + '.npz')['arr_0']
+ 
+            if len(unpadded_file)>0:   
+               f = ID 
+            if len(unpadded_file)==0:
+                unpadded_file = np.load(self.path + os.path.splitext(f)[0] + '.npz')['arr_0']
+                list_IDs_temp[i] = f
+            origin = unpadded_file[0, 3:6]   #Extract hip of the first frame
             [row, col] = unpadded_file.shape
-            origin = np.tile(origin, (row, 50))
-            unpadded_file = unpadded_file - origin
+            origin = np.tile(origin, (row, 13)) #making equal dimension
+            unpadded_file = unpadded_file - origin  #translation
             extra_frames = (len(unpadded_file) % self.step)
-            if extra_frames < (self.step/2):
+            l = 0
+            if len(unpadded_file)<self.step:
+                extra_frames = self.step - len(unpadded_file)
+                l = 1
+            if extra_frames < (self.step/2) & l==0:
                padded_file = unpadded_file[0:len(unpadded_file) - extra_frames,:]
             else:
                [row, col] = unpadded_file.shape
-               alpha = (len(unpadded_file)/self.step) + 1
+               alpha = int(len(unpadded_file)/self.step) + 1
                req_pad = np.zeros(((alpha * self.step)-row, col))
                padded_file = np.vstack((unpadded_file, req_pad))
             splitted_file = np.split(padded_file, self.step)

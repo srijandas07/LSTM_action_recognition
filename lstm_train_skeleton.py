@@ -1,15 +1,7 @@
 from argparse import ArgumentParser
 import sys
 
-argv = sys.argv
-# Parse arguments                                                                                                                                                                        
-parser = ArgumentParser(description='Helps getting things done.')
-# parser.add_argument('-v', '--verbose', action='store_true', help='run verbose')                                                                                                        
-parser.add_argument('name', help='Experiment Name')
-parser.add_argument('-epochs', '--epochs', help='Number of Epochs', default=30)
-args = parser.parse_args(argv[1:])
-
-from ntu_skeleton_loader_sampling import DataGenerator
+from smarthome_skeleton_loader_sampling import DataGenerator
 timesteps = 30
    
 from keras.models import Sequential
@@ -48,10 +40,10 @@ num_classes = 35
 batch_size = 200
 n_neuron = 512
 n_dropout = 0.5
-name = args.name
+name = sys.argv[2]
 
 csvlogger = CSVLogger(name+'_smarthomes.csv')
-epochs = int(args.epochs)
+epochs = int(sys.argv[1])
 model = build_model_without_TS(n_neuron, n_dropout, batch_size, timesteps, data_dim, num_classes)
 model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(lr=0.005, clipnorm=1), metrics=['accuracy']) 
 
