@@ -1,6 +1,8 @@
-#LSTM for Action Recognition
+# LSTM for Action Recognition
 ![](image.png)
-#Description
+
+## Description
+
 This script takes the 3D skeleton as input and trains a 3-layer LSTM.
 Two models of LSTMs are defined in the model.py script (You can use any one of them).
 For demo - the location of pre-processed 3D skeleton files are mentioned in the lstm_train.sh
